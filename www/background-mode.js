@@ -415,7 +415,7 @@ exports._defaults =
     bigText: false,
     resume:  true,
     silent:  false,
-    hidden:  true,
+    hidden:  false,
     color:   undefined,
     icon:    'icon'
 };
