@@ -30,6 +30,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -188,9 +189,10 @@ public class ForegroundService extends Service {
 
         getNotificationManager().createNotificationChannel(mChannel);
         }
-        String title    = settings.optString("title", NOTIFICATION_TITLE);
-        String text     = settings.optString("text", NOTIFICATION_TEXT);
-        boolean bigText = settings.optBoolean("bigText", false);
+        String title     = settings.optString("title", NOTIFICATION_TITLE);
+        String text      = settings.optString("text", NOTIFICATION_TEXT);
+        boolean bigText  = settings.optBoolean("bigText", false);
+        String largeIcon = settings.optString("largeIcon", null);
 
         Context context = getApplicationContext();
         String pkgName  = context.getPackageName();
@@ -202,6 +204,11 @@ public class ForegroundService extends Service {
                 .setContentText(text)
                 .setOngoing(true)
                 .setSmallIcon(getIconResId(settings));
+
+
+
+        if(largeIcon != null)
+            notification.setLargeIcon(BitmapFactory.decodeResource(getResources(), getLargeIconResId(largeIcon)));
 
         if(Build.VERSION.SDK_INT >= 26){
                    notification.setChannelId(CHANNEL_ID);
@@ -277,6 +284,44 @@ public class ForegroundService extends Service {
      * @return The resource id or 0 if not found.
      */
     private int getIconResId (String icon, String type)
+    {
+        Resources res  = getResources();
+        String pkgName = getPackageName();
+
+        int resId = res.getIdentifier(icon, type, pkgName);
+
+        if (resId == 0) {
+            resId = res.getIdentifier("icon", type, pkgName);
+        }
+
+        return resId;
+    }
+
+    /**
+     * Retrieves the resource ID of the app icon.
+     *
+     * @param settings A JSON dict containing the icon name.
+     */
+    private int getLargeIconResId (String icon)
+    {
+        int resId = getLargeIconResId(icon, "mipmap");
+
+        if (resId == 0) {
+            resId = getLargeIconResId(icon, "drawable");
+        }
+
+        return resId;
+    }
+
+    /**
+     * Retrieve resource id of the specified icon.
+     *
+     * @param icon The name of the icon.
+     * @param type The resource type where to look for.
+     *
+     * @return The resource id or 0 if not found.
+     */
+    private int getLargeIconResId (String icon, String type)
     {
         Resources res  = getResources();
         String pkgName = getPackageName();
