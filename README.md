@@ -149,7 +149,8 @@ cordova.plugins.backgroundMode.setDefaults({
     color: String // hex format like 'F14F4D'
     resume: Boolean,
     hidden: Boolean,
-    bigText: Boolean
+    bigText: Boolean,
+    largeIcon: String
 })
 ```
 
